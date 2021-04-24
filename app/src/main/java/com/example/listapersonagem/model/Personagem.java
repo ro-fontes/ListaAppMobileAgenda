@@ -16,7 +16,7 @@ public class Personagem implements Serializable {
         this.nascimento = nascimento;
     }
 
-    public Personagem(){
+    public Personagem() {
 
     }
 
@@ -50,11 +50,19 @@ public class Personagem implements Serializable {
     public String toString() {
         return nome;
     }
-    //Localizacao na lista pelo id
-    public void setId(int id){
+
+    //setar a Localizacao na lista pelo id
+    public void setId(int id) {
         this.id = id;
     }
-    public int getId(){
+
+    //Pegar a Localizacao na lista pelo id
+    public int getId() {
         return id;
+    }
+
+    //Verificador de o id e valido
+    public boolean IdValido() {
+        return id > 0;
     }
 }

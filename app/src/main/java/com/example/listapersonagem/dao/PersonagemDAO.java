@@ -18,22 +18,43 @@ public class PersonagemDAO {
     }
 
     //Edita o personagem escolhido
-    public void edita(Personagem personagem){
+    public void edita(Personagem personagem) {
         Personagem personagemEscolhido = null;
-        for (Personagem p:
-             personagens) {
-            if(p.getId() == personagem.getId()){
+        for (Personagem p :
+                personagens) {
+            if (p.getId() == personagem.getId()) {
                 personagemEscolhido = p;
             }
         }
         //se o personagem escolhido estiver vazio execulta o if
-        if(personagemEscolhido != null){
+        if (personagemEscolhido != null) {
             int posicaoDoPersonagem = personagens.indexOf(personagemEscolhido);
             personagens.set(posicaoDoPersonagem, personagem);
         }
     }
+
+    private Personagem buscaPersonagemID(Personagem personagem) {
+        for (Personagem p :
+                personagens) {
+            if (p.getId() == personagem.getId()) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     //Busca todas as informacoes salvas
     public List<Personagem> todos() {
         return new ArrayList<>(personagens);
+    }
+
+    //Metodo para apagar itens do formulario
+    public void remove(Personagem personagem) {
+        Personagem personagemDevolvido = buscaPersonagemID(personagem);
+        //Verificando se o personagemDevolvido nao esta vazio
+        if (personagemDevolvido != null) {
+            //removendo o objeto desejado
+            personagens.remove(personagemDevolvido);
+        }
     }
 }
