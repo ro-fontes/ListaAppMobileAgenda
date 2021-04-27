@@ -2,6 +2,8 @@ package com.example.listapersonagem.ui.activities;
 
 //Importando as referencias
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -25,6 +27,7 @@ import static com.example.listapersonagem.ui.activities.ConstantesActivities.CHA
 
 public class ListaPersonagemActivity extends AppCompatActivity {
 
+    //Declarando as variaveis
     public static final String TITLE_APPBAR = "Lista de Personagem";
     private final PersonagemDAO dao = new PersonagemDAO();
     private ArrayAdapter<Personagem> adapter;
@@ -65,16 +68,37 @@ public class ListaPersonagemActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         //Menu para remover um item da lista ao segurar
-        menu.add("Remover");
+        getMenuInflater().inflate(R.menu.activity_lista_personagens_menu, menu);
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Personagem personagemEscolhido = adapter.getItem(menuInfo.position);
-        //remove o item que foi escolhido
-        remove(personagemEscolhido);
+        //Apaga e cria um menu de dialogo para apagar o item selecionado
+        configuraMenu(item);
         return super.onContextItemSelected(item);
+    }
+
+    private void configuraMenu(@NonNull MenuItem item) {
+        //Pega o id do Menu
+        int itemId = item.getItemId();
+        if (itemId == R.id.activity_lista_personagem_menu_remover) {
+            //cria um menu de alerta ao clicar remover
+            new AlertDialog.Builder(this)
+                    .setTitle("Removendo Personagem")
+                    .setMessage("Tem certeza que deseja remover?")
+                    //ao clicar no sim, execulta a funcao para apagar o personagem
+                    .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                            Personagem personagemEscolhido = adapter.getItem(menuInfo.position);
+                            //remove o item que foi escolhido
+                            remove(personagemEscolhido);
+                        }
+                    })
+                    .setNegativeButton("Nao", null)
+                    .show();
+        }
     }
 
     private void configuraLista() {

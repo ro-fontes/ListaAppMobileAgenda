@@ -6,15 +6,20 @@ package com.example.listapersonagem.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.listapersonagem.R;
 import com.example.listapersonagem.dao.PersonagemDAO;
 import com.example.listapersonagem.model.Personagem;
+import com.github.rtoshiro.util.format.SimpleMaskFormatter;
+import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 
 import static com.example.listapersonagem.ui.activities.ConstantesActivities.CHAVE_PERSONAGEM;
 
@@ -31,6 +36,24 @@ public class FormularioPersonagemActivity extends AppCompatActivity {
 
     private final PersonagemDAO dao = new PersonagemDAO(); //criando um objeto dao(Banco de daodos do personagem) com referencia a PersonagemDAO.java
     private Personagem personagem; // Criando um objeto de tipo Personagem
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //Menu para savar ao clicar no check
+        getMenuInflater().inflate(R.menu.activity_formulario_personagem_menu_salvar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        //verificando se o botao que foi clicado eh o mesmo que foi escolhido
+        if (itemId == R.id.activity_formulario_personagem_menu_salvar) {
+            //Puxando a funcao de salvar o cadastro
+            finalizaFormulario();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +84,7 @@ public class FormularioPersonagemActivity extends AppCompatActivity {
     }
 
     private void preencheCampos() {
+        //preenche os campos com as variaveis salvas
         campoNome.setText(personagem.getNome());
         campoAltura.setText(personagem.getAltura());
         campoNascimento.setText(personagem.getNascimento());
@@ -97,6 +121,16 @@ public class FormularioPersonagemActivity extends AppCompatActivity {
         campoNome = findViewById(R.id.editText_nome);
         campoAltura = findViewById(R.id.editText_altura);
         campoNascimento = findViewById(R.id.editText_nascimento);
+
+        //adicionando as mascaras de altura no texto
+        SimpleMaskFormatter smfAltura = new SimpleMaskFormatter("N,NN");
+        MaskTextWatcher mtwAltura = new MaskTextWatcher(campoAltura, smfAltura);
+        campoAltura.addTextChangedListener(mtwAltura);
+
+        //adicionando as mascaras de Nascimento no texto
+        SimpleMaskFormatter smfNascimento = new SimpleMaskFormatter("NN/NN/NNNN");
+        MaskTextWatcher mtwNascimento = new MaskTextWatcher(campoNascimento, smfNascimento);
+        campoNascimento.addTextChangedListener(mtwNascimento);
     }
 
     private void preenchePersonagem() {
